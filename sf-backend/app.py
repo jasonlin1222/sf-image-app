@@ -1,33 +1,36 @@
 import os
-from flask import Flask, json, jsonify, request
+from flask import Flask, flash, json, jsonify, request, redirect, url_for, send_from_directory
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 
 # config
 app = Flask(__name__)
-UPLOAD_FOLDER='/home/jason/Desktop/SF_image_app/sf-backend/image'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = './image'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['FLASK_ENV'] = deve
 # helper function
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # app
+
+
 @app.route("/")
 def index():
     return "This is the api for sf-image-app"
 
+
 @app.route("/query", methods=['GET'])
 def query():
     body = request.args.get('query', "dog")
-    return jsonify({'success':1, 'image_url':body})
+    return jsonify({'success': 1, 'image_url': body})
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/getfile', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
@@ -53,3 +56,8 @@ def upload_file():
       <input type=submit value=Upload>
     </form>
     '''
+
+
+@app.route('/uploads/<name>', methods=['GET'])
+def download_file(name):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], name)
