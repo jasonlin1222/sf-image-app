@@ -32,12 +32,12 @@ function App() {
   };
 
   const upload = () => {
-    fetch("http://localhost:5000/getfile", {
-      mode: "no-cors",
+      fetch("http://localhost:5000/getfile", {
       method: "POST",
-      files: {
-        file: file,
+      headers:{
+        "Content-Type": "application/json",
       },
+      body:file,
     })
       .then((response) => {
         return response.json();
