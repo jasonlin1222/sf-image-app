@@ -8,7 +8,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = './image'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 cors = CORS(app)
-app.secret_key="12345"
+app.secret_key = "12345"
 app.config['CORS_HEADER'] = 'Content-Type'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # helper function
@@ -29,7 +29,8 @@ def index():
 @app.route("/query", methods=['GET'])
 def query():
     body = request.args.get('query', "")
-    return jsonify({'success': 1, 'image_url': body})
+    model = request.args.get('model', "1")
+    return jsonify({'success': 1, 'image_url': body, 'model': model})
 
 
 @app.route('/getfile', methods=['POST'])
@@ -38,11 +39,11 @@ def upload_file():
         return jsonify({'success': 0, 'err_msg': 'No file part'})
     file = request.files['file']
     if file.filename == '':
-        return jsonify({'success':0, 'err_msg': 'No selected file'})
+        return jsonify({'success': 0, 'err_msg': 'No selected file'})
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return jsonify({'success':1})
+        return jsonify({'success': 1})
 
 
 @app.route('/uploads/<name>', methods=['GET'])

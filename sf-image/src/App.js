@@ -8,21 +8,29 @@ import {
   Button,
   ImageList,
   Icon,
+  Select,
+  MenuItem,
+  FormControl,
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { useState } from "react";
+import { grid } from "@mui/system";
 
 function App() {
   const [query, setQuery] = useState("");
   const [file, setFile] = useState(null);
+  const [selectModel, setSelectModel] = useState(0);
 
   const submit = () => {
-    fetch("http://localhost:5000/query?query=" + query, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(
+      "http://localhost:5000/query?query=" + query + "&model=" + selectModel,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((response) => {
         return response.json();
       })
@@ -32,12 +40,12 @@ function App() {
   };
 
   const upload = () => {
-      fetch("http://localhost:5000/getfile", {
+    fetch("http://localhost:5000/getfile", {
       method: "POST",
-      headers:{
+      headers: {
         "Content-Type": "application/json",
       },
-      body:file,
+      body: file,
     })
       .then((response) => {
         return response.json();
@@ -75,7 +83,7 @@ function App() {
               }}
             />
           </Grid>
-          <Grid item container justify="space-between" spacing={73}>
+          <Grid item container justify="space-between" spacing={3}>
             <Grid item>
               <Button
                 data-testid="searchButton"
@@ -87,6 +95,23 @@ function App() {
               >
                 Search
               </Button>
+            </Grid>
+            <Grid item>
+              <FormControl fullWidth>
+                <Select
+                  label="Select Model Type"
+                  required
+                  onChange={(e) => {
+                    setSelectModel(e.target.value);
+                  }}
+                >
+                  <MenuItem value={1}>OPENAI's CLIP</MenuItem>
+                  <MenuItem value={2}>Transformer + ResNet</MenuItem>
+                  <MenuItem value={3}>Transformer + ViT</MenuItem>
+                  <MenuItem value={4}>LSTM + ResNet</MenuItem>
+                  <MenuItem value={5}>LSTM + Vit</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item>
               <Button
