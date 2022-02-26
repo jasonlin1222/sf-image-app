@@ -7,6 +7,7 @@ import {
   Grid,
   Button,
   ImageList,
+  ImageListItem,
   Icon,
   Select,
   MenuItem,
@@ -20,6 +21,20 @@ function App() {
   const [query, setQuery] = useState("");
   const [file, setFile] = useState(null);
   const [selectModel, setSelectModel] = useState(0);
+  const itemData = [
+    {
+      img: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+      title: 'Dog',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGRvZ3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
+      title: 'Dog',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80',
+      title: "Dog"
+    }
+  ];
 
   const submit = () => {
     fetch(
@@ -69,7 +84,7 @@ function App() {
           <Typography variant="h2"> Image Search Library </Typography>
         </Grid>
         <Grid item>
-          <Typography variant="h5"> seperate keyword by comma (,) </Typography>
+          <Typography variant="h5"> Query must be under 100 letters </Typography>
         </Grid>
         <Grid item container spacing={3} direction="column">
           <Grid item>
@@ -101,15 +116,13 @@ function App() {
                 <Select
                   label="Select Model Type"
                   required
+                  defaultValue={1}
                   onChange={(e) => {
                     setSelectModel(e.target.value);
                   }}
                 >
-                  <MenuItem value={1}>OPENAI's CLIP</MenuItem>
-                  <MenuItem value={2}>Transformer + ResNet</MenuItem>
-                  <MenuItem value={3}>Transformer + ViT</MenuItem>
-                  <MenuItem value={4}>LSTM + ResNet</MenuItem>
-                  <MenuItem value={5}>LSTM + Vit</MenuItem>
+                  <MenuItem value={1}>LSTM</MenuItem>
+                  <MenuItem value={2}>Transformer</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -134,12 +147,18 @@ function App() {
           </Grid>
         </Grid>
         <Grid>
-          <ImageList
-            sx={{ width: 500, height: 450 }}
-            variant="quilted"
-            cols={4}
-            rowHeight={121}
-          ></ImageList>
+        <ImageList sx={{ width: 800, height: 450 }} cols={3} rowHeight={164}>
+        {itemData.map((item) => (
+          <ImageListItem key={item.img}>
+            <img
+              src={`${item.img}?w=500&h=400&auto=format`}
+              srcSet={`${item.img}?w=500&h=400&auto=format&dpr=2 2x`}
+              alt={item.title}
+              loading="lazy"
+            />
+          </ImageListItem>
+        ))}
+      </ImageList>
         </Grid>
       </Grid>
     </Container>
