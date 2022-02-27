@@ -24,7 +24,7 @@ def allowed_file(filename):
 
 @app.route("/")
 def index():
-    process.load_dataset()
+    # process.load_dataset()
     return "This is the api for sf-image-app"
 
 
