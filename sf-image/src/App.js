@@ -16,25 +16,13 @@ import {
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { useState } from "react";
 import { grid } from "@mui/system";
+import { Menu } from "@mui/material";
 
 function App() {
   const [query, setQuery] = useState("");
   const [file, setFile] = useState(null);
   const [selectModel, setSelectModel] = useState(0);
-  const itemData = [
-    {
-      img: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-      title: 'Dog',
-    },
-    {
-      img: 'https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGRvZ3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
-      title: 'Dog',
-    },
-    {
-      img: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80',
-      title: "Dog"
-    }
-  ];
+  const [itemData, setItemData] = useState([]);
 
   const submit = () => {
     fetch(
@@ -50,7 +38,7 @@ function App() {
         return response.json();
       })
       .then((response) => {
-        console.log(response);
+        setItemData(response.image_url)
       });
   };
 
@@ -121,8 +109,9 @@ function App() {
                     setSelectModel(e.target.value);
                   }}
                 >
-                  <MenuItem value={1}>LSTM</MenuItem>
-                  <MenuItem value={2}>Transformer</MenuItem>
+                  <MenuItem value={1}>CLIP from OPENAI</MenuItem>
+                  <MenuItem value={2}>LSTM</MenuItem>
+                  <MenuItem value={3}>Transformer</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -147,13 +136,12 @@ function App() {
           </Grid>
         </Grid>
         <Grid>
-        <ImageList sx={{ width: 800, height: 450 }} cols={3} rowHeight={164}>
+        <ImageList sx={{ width: 800, height: 450 }} cols={3} rowHeight={200}>
         {itemData.map((item) => (
           <ImageListItem key={item.img}>
             <img
               src={`${item.img}?w=500&h=400&auto=format`}
               srcSet={`${item.img}?w=500&h=400&auto=format&dpr=2 2x`}
-              alt={item.title}
               loading="lazy"
             />
           </ImageListItem>

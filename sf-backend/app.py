@@ -24,6 +24,7 @@ def allowed_file(filename):
 
 @app.route("/")
 def index():
+    process.load_dataset()
     return "This is the api for sf-image-app"
 
 
@@ -34,10 +35,12 @@ def query():
     if body == "" or len(body) > 100:
         return jsonify({'success':0, 'err_msg': 'query not allowed'})
     if model == 1:
-        images = search_lstm(body)
+        images = process.search_clip(body)
     elif model == 2:
-        images = search_trans(body)
-    return jsonify({'success': 1, 'image_url': body, 'model': model})
+        images = process.search_lstm(body)
+    elif model == 3:
+        images = process.search_trans(body)
+    return jsonify({'success': 1, 'image_url': images, 'model': model})
 
 
 # @app.route('/getfile', methods=['POST'])

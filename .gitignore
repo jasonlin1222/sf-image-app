@@ -22,3 +22,5 @@ sf-image/npm-debug.log*
 sf-image/yarn-debug.log*
 sf-image/yarn-error.log*
 sf-backend/venv
+sf-backend/text_encoder
+sf-backend/vision_encoder
