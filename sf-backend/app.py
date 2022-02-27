@@ -32,6 +32,7 @@ def index():
 def query():
     body = request.args.get('query', "")
     model = request.args.get('model', "1")
+    images = "error"
     if body == "" or len(body) > 100:
         return jsonify({'success':0, 'err_msg': 'query not allowed'})
     if model == 1:
@@ -40,6 +41,7 @@ def query():
         images = process.search_lstm(body)
     elif model == 3:
         images = process.search_trans(body)
+    print(images)
     return jsonify({'success': 1, 'image_url': images, 'model': model})
 
 

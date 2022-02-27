@@ -10,8 +10,8 @@ from PIL import Image
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/32", device=device, jit=False)
-trans_vision = keras.models.load_model("vision_encoder")
-trans_text = keras.models.load_model("text_encoder")
+# trans_vision = keras.models.load_model("vision_encoder")
+# trans_text = keras.models.load_model("text_encoder")
 image_paths = []
 imgemb_clip = []
 
@@ -73,6 +73,7 @@ def read_image(image_path):
     return tf.image.resize(image_array, (224, 224))
 
 def search_clip(query, images = imgemb_clip, k=9):
+	create_image_embeddings_clip(image_paths)
 	text = clip.tokenize(query).to(device)
 	with torch.no_grad():
 		image_embeddings = model.encode_image(images)
