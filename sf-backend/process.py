@@ -20,7 +20,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 # trans_vision = keras.models.load_model("vision_encoder")
 # trans_text = keras.models.load_model("text_encoder")
 model, preprocess = clip.load("ViT-B/32", device=device)
-model2, preprocess2 = clip.load("RN50x16", device=device)
+model2, preprocess2 = clip.load("ViT-B/16", device=device)
 photo_ids = pd.read_csv("unsplash-dataset/photo_ids.csv")
 photo_ids = list(photo_ids['photo_id'])
 photo_features = np.load("unsplash-dataset/features.npy")
