@@ -24,3 +24,6 @@ sf-image/yarn-error.log*
 sf-backend/venv
 sf-backend/text_encoder
 sf-backend/vision_encoder
+
+Train_GCC-training.tsv
+sf-backend/model.pt

@@ -21,7 +21,7 @@ import { Menu } from "@mui/material";
 function App() {
   const [query, setQuery] = useState("");
   const [file, setFile] = useState(null);
-  const [selectModel, setSelectModel] = useState(0);
+  const [selectModel, setSelectModel] = useState(1);
   const [itemData, setItemData] = useState([]);
 
   const submit = () => {
@@ -38,7 +38,7 @@ function App() {
         return response.json();
       })
       .then((response) => {
-        setItemData(response.image_url)
+        setItemData(response.image_url);
       });
   };
 
@@ -72,7 +72,10 @@ function App() {
           <Typography variant="h2"> Image Search Library </Typography>
         </Grid>
         <Grid item>
-          <Typography variant="h5"> Query must be under 100 letters </Typography>
+          <Typography variant="h5">
+            {" "}
+            Query must be under 100 letters{" "}
+          </Typography>
         </Grid>
         <Grid item container spacing={3} direction="column">
           <Grid item>
@@ -136,17 +139,17 @@ function App() {
           </Grid>
         </Grid>
         <Grid>
-        <ImageList sx={{ width: 800, height: 450 }} cols={3} rowHeight={200}>
-        {itemData.map((item) => (
-          <ImageListItem key={item.img}>
-            <img
-              src={`${item.img}?w=500&h=400&auto=format`}
-              srcSet={`${item.img}?w=500&h=400&auto=format&dpr=2 2x`}
-              loading="lazy"
-            />
-          </ImageListItem>
-        ))}
-      </ImageList>
+          <ImageList sx={{ width: 800, height: 450 }} cols={3} rowHeight={200}>
+            {/* {itemData.map((item) => (
+              <ImageListItem key={item.img}>
+                <img
+                  src={`${item.img}?w=500&h=400&auto=format`}
+                  srcSet={`${item.img}?w=500&h=400&auto=format&dpr=2 2x`}
+                  loading="lazy"
+                />
+              </ImageListItem>
+            ))} */}
+          </ImageList>
         </Grid>
       </Grid>
     </Container>
