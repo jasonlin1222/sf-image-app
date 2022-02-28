@@ -27,3 +27,4 @@ sf-backend/vision_encoder
 
 Train_GCC-training.tsv
 sf-backend/model.pt
+sf-backend/unsplash-dataset

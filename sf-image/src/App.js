@@ -38,6 +38,7 @@ function App() {
         return response.json();
       })
       .then((response) => {
+        console.log(response)
         setItemData(response.image_url);
       });
   };
@@ -112,9 +113,8 @@ function App() {
                     setSelectModel(e.target.value);
                   }}
                 >
-                  <MenuItem value={1}>CLIP from OPENAI</MenuItem>
+                  <MenuItem value={1}>Transformer</MenuItem>
                   <MenuItem value={2}>LSTM</MenuItem>
-                  <MenuItem value={3}>Transformer</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -140,15 +140,15 @@ function App() {
         </Grid>
         <Grid>
           <ImageList sx={{ width: 800, height: 450 }} cols={3} rowHeight={200}>
-            {/* {itemData.map((item) => (
-              <ImageListItem key={item.img}>
+            {itemData.map((item) => (
+              <ImageListItem key={item}>
                 <img
-                  src={`${item.img}?w=500&h=400&auto=format`}
-                  srcSet={`${item.img}?w=500&h=400&auto=format&dpr=2 2x`}
+                  src={`https://unsplash.com/photos/${item}/download?w=320`}
+                  srcSet={`https://unsplash.com/photos/${item}/download?w=320`}
                   loading="lazy"
                 />
               </ImageListItem>
-            ))} */}
+            ))}
           </ImageList>
         </Grid>
       </Grid>

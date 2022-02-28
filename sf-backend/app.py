@@ -39,9 +39,7 @@ def query():
     if model == 1:
         images = process.search_clip(body)
     elif model == 2:
-        images = process.search_lstm(body)
-    elif model == 3:
-        images = process.search_trans(body)
+        images = process.search_clip_less(body)
     return jsonify({'success': 1, 'image_url': images, 'model': model})
 
 

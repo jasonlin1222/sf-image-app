@@ -12,26 +12,19 @@ from torchvision.transforms import Compose, Resize, CenterCrop, ToTensor, Normal
 # import keras
 import os
 from PIL import Image
+# wget https://github.com/haltakov/natural-language-image-search/releases/download/1.0.0/photo_ids.csv -O unsplash-dataset/photo_ids.csv
+# wget https://github.com/haltakov/natural-language-image-search/releases/download/1.0.0/features.npy -O unsplash-dataset/features.npy
+
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 # trans_vision = keras.models.load_model("vision_encoder")
 # trans_text = keras.models.load_model("text_encoder")
-model = torch.jit.load("model.pt").cpu().eval()
-input_resolution = model.input_resolution.item()
-context_length = model.context_length.item()
-vocab_size = model.vocab_size.item()
-
-preprocess = Compose([
-    Resize(input_resolution, interpolation=Image.BICUBIC),
-    CenterCrop(input_resolution),
-    ToTensor()
-])
-
-image_mean = torch.tensor([0.48145466, 0.4578275, 0.40821073]).to(device)
-image_std = torch.tensor([0.26862954, 0.26130258, 0.27577711]).to(device)
-
-clip_image_emb = []
-image_paths = []
+model, preprocess = clip.load("ViT-B/32", device=device)
+model2, preprocess2 = clip.load("RN50x64", device=device)
+photo_ids = pd.read_csv("unsplash-dataset/photo_ids.csv")
+photo_ids = list(photo_ids['photo_id'])
+photo_features = np.load("unsplash-dataset/features.npy")
+photo_features = torch.from_numpy(photo_features).float().to(device)
 
 
 def load_dataset():
@@ -73,44 +66,36 @@ def load_dataset():
 
     image_paths = list(image_path_to_caption.keys())
     print("processing complete")
-
-def get_dataset():
-    df = pd.read_csv('../Train_GCC-training.tsv', sep='\t')
-    for image in df['Url']:
-        image_paths.append(image)
-
     
-def create_image_embeddings_clip(image_paths):
-    for image in image_paths[:10]:
-        response = requests.get(image)
-        clip_image_emb.append(Image.open(BytesIO(response.content)).convert("RGB"))
-    images = [preprocess(im)  for im in clip_image_emb]
-    image_input = torch.tensor(np.stack(images)).to(device)
-    image_input -= image_mean[:, None, None]
-    image_input /= image_std[:, None, None]
-    return image_input
-
 def search_clip(query):
-    clip_images = create_image_embeddings_clip(image_paths)
-    print("image embedding done")
     text = clip.tokenize(query).to(device)
     with torch.no_grad():
-        image_embeddings = model.encode_image(clip_images).float()
-        query_embeddings = model.encode_text(text).float()
-        image_embeddings /= image_embeddings.norm(dim=-1, keepdim=True)
+        query_embeddings = model.encode_text(text)
         query_embeddings /= query_embeddings.norm(dim=-1, keepdim=True)
-    sim = query_embeddings.cpu().numpy() @ image_embeddings.cpu().numpy().T
-    sim = sim[0]
-    print("encoding done")
-    results = zip(range(len(sim)), sim)
-    results = sorted(results, key=lambda x: x[1],reverse= True)
-    top_N_images = []
-    scores=[]
-    for index,score in results[:9]:
-        scores.append(score)
-        top_N_images.append(clip_image_emb[index])
-    return top_N_images
+    
+    sim = (photo_features @ query_embeddings.T).squeeze(1)
+    idx = (-sim).argsort()
+    image_list = []
 
+    for i in idx[:9]:
+        image_list.append(photo_ids[i])
+    print("search done")
+    return image_list
+
+def search_clip_less(query):
+    text = clip.tokenize(query).to(device)
+    with torch.no_grad():
+        query_embeddings = model2.encode_text(text)
+        query_embeddings /= query_embeddings.norm(dim=-1, keepdim=True)
+    
+    sim = (photo_features @ query_embeddings.T).squeeze(1)
+    idx = (-sim).argsort()
+    image_list = []
+
+    for i in idx[:9]:
+        image_list.append(photo_ids[i])
+    print("search done")
+    return image_list
     
 
 def search_lstm(image_embeddings, query, k=9, normalize=True):
