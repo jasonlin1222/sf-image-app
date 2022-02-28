@@ -20,7 +20,6 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 # trans_vision = keras.models.load_model("vision_encoder")
 # trans_text = keras.models.load_model("text_encoder")
 model, preprocess = clip.load("ViT-B/32", device=device)
-model2, preprocess2 = clip.load("ViT-B/16", device=device)
 photo_ids = pd.read_csv("unsplash-dataset/photo_ids.csv")
 photo_ids = list(photo_ids['photo_id'])
 photo_features = np.load("unsplash-dataset/features.npy")
@@ -83,9 +82,9 @@ def search_clip(query):
     return image_list
 
 def search_clip_less(query):
-    text = clip.tokenize(query).to(device)
+    text = clip.tokenize(f"This is a {query}").to(device)
     with torch.no_grad():
-        query_embeddings = model2.encode_text(text)
+        query_embeddings = model.encode_text(text)
         query_embeddings /= query_embeddings.norm(dim=-1, keepdim=True)
     
     sim = (photo_features @ query_embeddings.T).squeeze(1)
