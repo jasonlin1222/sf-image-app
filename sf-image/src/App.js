@@ -118,7 +118,7 @@ function App() {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <Button
                 data-testid="uploadButton"
                 variant="contained"
@@ -135,7 +135,7 @@ function App() {
                   }}
                 />
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
         <Grid>
